@@ -6,12 +6,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProfesorController } from './profesor.controller';
 import { Repository } from 'typeorm';
 import { Profesor } from './entities/profesor.entity';
+import { Evaluacion } from 'src/evaluacion/entities/evaluacion.entity';
 
 @Injectable()
 export class ProfesorService {
   constructor(
-  @InjectRepository (ProfesorController)
+  @InjectRepository (Profesor)
   private readonly profesorRepository: Repository<Profesor>,
+  
+  @InjectRepository (Evaluacion)
+  private readonly evalRepository: Repository<Profesor>,
   ){}
 
   async crearProfesor(createProfesorDto: CreateProfesorDto) {
@@ -24,7 +28,13 @@ export class ProfesorService {
   }
 
   async asignarEvaluador(id:string , idEval:string){
-
+    const eval= this.evalRepository.findOne({where:idEval})
+    const prof = this.profesorRepository.findOne({where:id})
+    if (prof.evaluaciones.length > 3){
+        throw new BadRequestException()
+    } 
+    
+    return this.profesorRepository.save(prof)
   }
   findAll() {
     return `This action returns all profesor`;
