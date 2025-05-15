@@ -15,12 +15,12 @@ export class Estudiante {
     semestre:number;
 
     @Column()
-    programa:number;
+    programa:string;
 
     @Column()
     promedio:number;
 
     @OneToMany(()=> Proyecto ,(proyecto)=>proyecto.lider)
-    proyectos!: string[];
+    proyectos: string[];
 
 }

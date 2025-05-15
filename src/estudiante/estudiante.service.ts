@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
 import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,8 +14,13 @@ export class EstudianteService {
         ){}
 
 
-  crearEstudiante(createEstudianteDto: CreateEstudianteDto) {
-    return 'This action adds a new estudiante';
+  async crearEstudiante(createEstudianteDto: CreateEstudianteDto) {
+     const {semestre , ...dataEstudiante, promedio}=createEstudianteDto;
+     if (semestre< 4 || promedio < 3.2){
+      throw new BadRequestException("No se puede crear el estudiante por su semestr y/o promedio")
+     }
+     const newEstudiante = this.estudianteRepository.create(createEstudianteDto)
+     return await this.estudianteRepository.save(newEstudiante)
   }
 
   findAll() {
@@ -30,7 +35,13 @@ export class EstudianteService {
     return `This action updates a #${id} estudiante`;
   }
 
-  remove(id: number) {
+ async  eliminarEstudiante(id: number) {
+    const user = await this.estudianteRepository.findOne({
+            where: { id:id },
+            relations: ['proyectos'], 
+        });
+    if (!user) throw new NotFoundException("User not found");
+    if (user.proyectos) throw new BadRequestException("No se puede eleminar el estudiante por que tiene proyectos")    
     return `This action removes a #${id} estudiante`;
   }
 }
