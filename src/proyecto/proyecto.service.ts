@@ -4,21 +4,33 @@ import { CreateProyectoDto } from './dto/create-proyecto.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proyecto } from './entities/proyecto.entity';
+import { Estudiante } from 'src/estudiante/entities/estudiante.entity';
 
 @Injectable()
 export class ProyectoService {
   constructor(
     @InjectRepository(Proyecto)
     private readonly proyectoRepository: Repository<Proyecto>,
+    @InjectRepository(Estudiante)
+    private readonly estudianteRepository: Repository<Estudiante>
   ) { }
 
   async crearProyecto(createProyectoDto: CreateProyectoDto) {
     const presupuesto = createProyectoDto.presupuesto
     const titulo = createProyectoDto.titulo
+    const { liderId, ...proyectoData } = createProyectoDto;
     if (presupuesto <= 0 || titulo.length <= 15) {
       throw new BadRequestException("No se puede crear el proyecto por su presupuesto o titulo")
     }
-    const newProyecto = this.proyectoRepository.create(createProyectoDto)
+    const newProyecto = this.proyectoRepository.create(proyectoData)
+
+    if (liderId) {
+      const estudiante = await this.estudianteRepository.findOne({ where: { id: liderId } })
+      if (estudiante) {
+        newProyecto.lider = estudiante;
+      }
+    }
+
     return await this.proyectoRepository.save(newProyecto)
   }
 
