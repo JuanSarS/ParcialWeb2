@@ -1,26 +1,27 @@
 /* eslint-disable prettier/prettier */
 import { Proyecto } from "src/proyecto/entities/proyecto.entity";
-import { Column, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+@Entity()
 export class Estudiante {
-    @PrimaryGeneratedColumn ()
+    @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    cedula:number;
+    cedula: number;
 
     @Column()
-    nombre:string;
+    nombre: string;
 
     @Column()
-    semestre:number;
+    semestre: number;
 
     @Column()
-    programa:string;
+    programa: string;
 
     @Column()
-    promedio:number;
+    promedio: number;
 
-    @OneToMany(()=> Proyecto ,(proyecto)=>proyecto.lider)
-    proyectos: string[];
+    @OneToMany(() => Proyecto, (proyecto) => proyecto.lider)
+    proyectos: Proyecto[];
 
 }

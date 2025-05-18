@@ -1,15 +1,15 @@
 /* eslint-disable prettier/prettier */
 import { Profesor } from "src/profesor/entities/profesor.entity";
 import { Proyecto } from "src/proyecto/entities/proyecto.entity";
-import { ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+@Entity()
 export class Evaluacion {
-    @PrimaryGeneratedColumn ()
+    @PrimaryGeneratedColumn()
     id: number;
-    
-    @ManyToOne(()=>Proyecto,proyecto => proyecto.evaluaciones)
-    proyecto!:string;
-    
-    @ManyToOne(()=>Profesor,profesor => profesor.evaluaciones)
-    evaluador!:string;
+
+    @ManyToOne(() => Proyecto, proyecto => proyecto.evaluaciones)
+    proyecto!: Proyecto;
+
+    @ManyToOne(() => Profesor, profesor => profesor.evaluaciones)
+    evaluador!: Profesor;
 }

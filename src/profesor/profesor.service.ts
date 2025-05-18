@@ -3,7 +3,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateProfesorDto } from './dto/create-profesor.dto';
 import { UpdateProfesorDto } from './dto/update-profesor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProfesorController } from './profesor.controller';
 import { Repository } from 'typeorm';
 import { Profesor } from './entities/profesor.entity';
 import { Evaluacion } from 'src/evaluacion/entities/evaluacion.entity';
@@ -28,12 +27,12 @@ export class ProfesorService {
   }
 
   async asignarEvaluador(id:string , idEval:string){
-    const eval= this.evalRepository.findOne({where:idEval})
-    const prof = this.profesorRepository.findOne({where:id})
+    const eval=  await this.evalRepository.findOne({where:idEval})
+    const prof = await this.profesorRepository.findOne({where:id})
     if (prof.evaluaciones.length > 3){
         throw new BadRequestException()
     } 
-    
+
     return this.profesorRepository.save(prof)
   }
   findAll() {

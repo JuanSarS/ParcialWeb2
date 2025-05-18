@@ -27,9 +27,8 @@ export class ProyectoService {
     return `This action returns all proyecto`;
   }
 
-  async avanzarProyecto(id: number) {
-    const proyecto = await this.proyectoRepository.findOne({
-      where: { id } });
+  async avanzarProyecto(id: string) {
+    const proyecto = await this.proyectoRepository.findOne({where:{id:id}});
     if (!proyecto) {
       throw new NotFoundException(`Proyecto with id ${id} not found`);
     }
@@ -43,7 +42,7 @@ export class ProyectoService {
 
   }
 
-  async finAllEstudiantes(id:string){
+  async findAllEstudiantes(id:string){
     const proyecto = await this.proyectoRepository.findOne({
       where: { id },
       relations: ['lider'],

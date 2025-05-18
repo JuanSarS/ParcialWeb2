@@ -1,1 +1,5 @@
-export class CreateEvaluacionDto {}
+/* eslint-disable prettier/prettier */
+export class CreateEvaluacionDto {
+    proyectId: number;
+    evaluadorId: number;
+}

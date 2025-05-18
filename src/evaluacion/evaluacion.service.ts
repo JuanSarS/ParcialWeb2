@@ -1,13 +1,51 @@
-import { Injectable } from '@nestjs/common';
+/* eslint-disable prettier/prettier */
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateEvaluacionDto } from './dto/create-evaluacion.dto';
-import { UpdateEvaluacionDto } from './dto/update-evaluacion.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Evaluacion } from './entities/evaluacion.entity';
+import { Repository } from 'typeorm';
+import { Profesor } from 'src/profesor/entities/profesor.entity';
+import { Proyecto } from 'src/proyecto/entities/proyecto.entity';
 
 @Injectable()
 export class EvaluacionService {
-  create(createEvaluacionDto: CreateEvaluacionDto) {
-    return 'This action adds a new evaluacion';
-  }
+  constructor(
+    @InjectRepository(Evaluacion)
+    private readonly evaluacionRepository: Repository<Evaluacion>,
+    @InjectRepository(Profesor)
+    private readonly profesorRepository: Repository<Profesor>,
+    @InjectRepository(Proyecto)
+    private readonly proyectoRepository: Repository<Proyecto>
+  ) { };
 
+  async crearEvaluacion(createEvaluacionDto: CreateEvaluacionDto) {
+    const { proyectId, evaluadorId } = createEvaluacionDto;
+    const profesor = await this.profesorRepository.findOne(
+      {
+        where: { id: evaluadorId },
+        relations: ['proyectos'],
+      });
+    if (!profesor) throw new NotFoundException("Profesor not found");
+
+    const proyect = await this.proyectoRepository.findOne(
+      {
+        where: { id: proyectId },
+        relations: ['proyectos'],
+      });
+    if (!proyect) throw new NotFoundException("Proyect not found");
+    const yaEsMentor = profesor.mentorias.some(
+      (proy: Proyecto) => proy.id === proyectId
+    );
+
+    if (yaEsMentor) {
+      throw new BadRequestException("El profesor no puede evaluar un proyecto del que ya es mentor");
+    };
+    const evaluationData = { evaluador: profesor, proyecto: proyect };
+    const newEvaluaccion = this.evaluacionRepository.create(evaluationData);
+    return await this.evaluacionRepository.save(newEvaluaccion);
+
+  }
+  /*
   findAll() {
     return `This action returns all evaluacion`;
   }
@@ -23,4 +61,5 @@ export class EvaluacionService {
   remove(id: number) {
     return `This action removes a #${id} evaluacion`;
   }
+    */
 }

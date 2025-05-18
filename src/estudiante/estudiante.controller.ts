@@ -1,17 +1,30 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  //Get,
+  Post,
+  Body,
+  //Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { EstudianteService } from './estudiante.service';
 import { CreateEstudianteDto } from './dto/create-estudiante.dto';
-import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
+//import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 
 @Controller('estudiante')
 export class EstudianteController {
-  constructor(private readonly estudianteService: EstudianteService) {}
+  // eslint-disable-next-line prettier/prettier
+  constructor(private readonly estudianteService: EstudianteService) { }
 
   @Post()
   create(@Body() createEstudianteDto: CreateEstudianteDto) {
-    return this.estudianteService.create(createEstudianteDto);
+    return this.estudianteService.crearEstudiante(createEstudianteDto);
   }
-
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.estudianteService.eliminarEstudiante(+id);
+  }
+  /*
   @Get()
   findAll() {
     return this.estudianteService.findAll();
@@ -31,4 +44,5 @@ export class EstudianteController {
   remove(@Param('id') id: string) {
     return this.estudianteService.remove(+id);
   }
+  */
 }
