@@ -76,7 +76,9 @@ describe('ProfesorService', () => {
     jest.spyOn(profesorRepository, 'save').mockResolvedValue({ ...prof, evaluaciones: [evalu] });
 
     const result = await service.asignarEvaluador(prof.id, evalu.id);
-    expect(result.evaluaciones.length).toBe(1);
+    expect(result.evaluacionId).toBe(evalu.id);
+    expect(result.profesorId).toBe(prof.id);
+    expect(result.evaluacionesIds).toContain(evalu.id);
   });
 
 

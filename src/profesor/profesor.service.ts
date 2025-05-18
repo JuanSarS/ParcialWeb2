@@ -30,6 +30,7 @@ export class ProfesorService {
       where: { id: idEval },
       relations: ["evaluador"]
     })
+
     if (!evalu) throw new NotFoundException("Evaluation not found");
 
     const prof = await this.profesorRepository.findOne({
@@ -47,7 +48,12 @@ export class ProfesorService {
     evalu.evaluador = prof
     prof.evaluaciones.push(evalu)
     await this.evalRepository.save(evalu)
-    return await this.profesorRepository.save(prof)
+    await this.profesorRepository.save(prof)
+    return {
+      profesorId: prof.id,
+      evaluacionesIds: prof.evaluaciones.map(e => e.id),
+      evaluacionId: evalu.id
+    };
   }
 
   /*

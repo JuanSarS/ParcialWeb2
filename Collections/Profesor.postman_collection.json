@@ -1,0 +1,452 @@
+{
+	"info": {
+		"_postman_id": "007a12dc-b350-4630-bcb6-04c00b1b4da9",
+		"name": "Profesor",
+		"description": "Las pruebas fueron diseñadas para validar el comportamiento del sistema al crear profesores y asignarlos como evaluadores, contemplando tanto escenarios correctos como restricciones de negocio:\n\n1. **Crear profesor**  \n    Verifica que el sistema permita crear correctamente un profesor con todos los datos válidos, incluyendo la extensión telefónica.\n    \n2. **Crear profesor sin 5 dígitos en la extensión**  \n    Evalúa que el sistema rechace la creación de un profesor si la extensión telefónica no cumple con el formato requerido (5 dígitos), asegurando integridad en los datos.\n    \n3. **Asignar evaluador**  \n    Valida que se pueda asignar correctamente un profesor como evaluador a una evaluación, cuando se cumplen todas las condiciones necesarias. Y se cree la relación dentro de la evaluación.\n    \n4. **Asignar evaluador con más de 2 evaluaciones**  \n    Verifica que el sistema impida asignar un evaluador que ya tenga más de dos evaluaciones activas, cumpliendo con la regla de límite de carga evaluativa.\n    \n5. **Asignar evaluador con evaluador ya asignado**  \n    Asegura que el sistema no permita reasignar una evaluación a un evaluador que ya está asignado a esa misma evaluación, evitando duplicidad.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45054441"
+	},
+	"item": [
+		{
+			"name": "Crear profesor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()\r",
+							"pm.globals.set(\"profesor_id\",data.id)\r",
+							"pm.test(\"Status code is 201\",function (){\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"cedula\": 12345678,\n  \"nombre\": \"Carlos Pérez\",\n  \"departamento\": \"Ingeniería\",\n  \"extencion\": 12345,\n  \"esParEvaluado\": false\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/profesor",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"profesor"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Crear profesor",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cedula\": 12345678,\n  \"nombre\": \"Carlos Pérez\",\n  \"departamento\": \"Ingeniería\",\n  \"extencion\": 12345,\n  \"esParEvaluado\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/profesor",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"profesor"
+							]
+						}
+					},
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\r\n  \"id\":1,\r\n  \"cedula\": 12345678,\r\n  \"nombre\": \"Carlos Pérez\",\r\n  \"departamento\": \"Ingeniería\",\r\n  \"extencion\": 12345,\r\n  \"esParEvaluado\": false\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear profesor sin 5 dígitos en la extensión",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\",function(){\r",
+							"    pm.response.to.have.status(400)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Get expected error message\",function(){\r",
+							"    var data= pm.response.json();\r",
+							"    pm.expect(data.message).to.eql(\"La extensión debe tener 5 digitos\")\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"cedula\": 87654321,\n  \"nombre\": \"Ana Gómez\",\n  \"departamento\": \"Matemáticas\",\n  \"extencion\": 1234,\n  \"esParEvaluado\": false\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/profesor",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"profesor"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Crear profesor sin 5 dígitos en la extensión",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"cedula\": 87654321,\n  \"nombre\": \"Ana Gómez\",\n  \"departamento\": \"Matemáticas\",\n  \"extencion\": 1234,\n  \"esParEvaluado\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/profesor",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"profesor"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\r\n    \"statusCode\": 400,\r\n    \"message\": \"La extensión debe tener 5 digitos\",\r\n    \"error\": \"Bad Request\"\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Asignar evaluador",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Debe devolver un objeto con evaluaciones\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"profesorId\");\r",
+							"    pm.expect(jsonData).to.have.property(\"evaluacionesIds\");\r",
+							"    pm.expect(jsonData.evaluacionesIds).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Debe incluir la evaluación asignada\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"evaluacionId\");\r",
+							"    pm.expect(jsonData.evaluacionesIds).to.include(jsonData.evaluacionId);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/profesor/{{profesor_id}}/evaluacion/{{evaluacion_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"profesor",
+						"{{profesor_id}}",
+						"evaluacion",
+						"{{evaluacion_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Asignar evaluador",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/profesor/{{profesor_id}}/evaluacion/{{evaluacion_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"profesor",
+								"{{profesor_id}}",
+								"evaluacion",
+								"{{evaluacion_id}}"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\r\n    \"profesorId\": 4,\r\n    \"evaluacionesIds\": [\r\n        6,\r\n        7\r\n    ],\r\n    \"evaluacionId\": 7\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Asignar evaluador con más de 2 evaluaciones",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Mensaje de error correcto\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"El profesor no puede tener más de 2 evaluaciones activas\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/profesor/{{profesor_id}}/evaluacion/{{evaluacion_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"profesor",
+						"{{profesor_id}}",
+						"evaluacion",
+						"{{evaluacion_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Asignar evaluador con más de 2 evaluaciones",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/profesor/{{profesor_id}}/evaluacion/{{evaluacion_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"profesor",
+								"{{profesor_id}}",
+								"evaluacion",
+								"{{evaluacion_id}}"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\r\n  \"statusCode\": 400,\r\n  \"message\": \"El profesor no puede tener más de 2 evaluaciones activas\",\r\n  \"error\": \"Bad Request\"\r\n}\r\n"
+				}
+			]
+		},
+		{
+			"name": "Asignar evaluador con evaluador ya asignado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Mensaje indica que ya hay evaluador\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql(\"Esta evaluación ya tiene un evaluador asignado\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/profesor/{{profesor_id}}/evaluacion/{{evaluacion_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"profesor",
+						"{{profesor_id}}",
+						"evaluacion",
+						"{{evaluacion_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Asignar Evaluador con evaluador ya asignado",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/profesor/1/asignar-evaluador/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"profesor",
+								"1",
+								"asignar-evaluador",
+								"4"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\r\n  \"statusCode\": 400,\r\n  \"message\": \"Esta evaluación ya tiene un evaluador asignado\",\r\n  \"error\": \"Bad Request\"\r\n}\r\n"
+				}
+			]
+		}
+	]
+}

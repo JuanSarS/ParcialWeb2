@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proyecto } from './entities/proyecto.entity';
 import { Estudiante } from 'src/estudiante/entities/estudiante.entity';
+import { Profesor } from 'src/profesor/entities/profesor.entity';
 
 @Injectable()
 export class ProyectoService {
@@ -12,13 +13,15 @@ export class ProyectoService {
     @InjectRepository(Proyecto)
     private readonly proyectoRepository: Repository<Proyecto>,
     @InjectRepository(Estudiante)
-    private readonly estudianteRepository: Repository<Estudiante>
+    private readonly estudianteRepository: Repository<Estudiante>,
+    @InjectRepository(Profesor)
+    private readonly profesorRepository: Repository<Profesor>
   ) { }
 
   async crearProyecto(createProyectoDto: CreateProyectoDto) {
     const presupuesto = createProyectoDto.presupuesto
     const titulo = createProyectoDto.titulo
-    const { liderId, ...proyectoData } = createProyectoDto;
+    const { liderId, mentorId, ...proyectoData } = createProyectoDto;
     if (presupuesto <= 0 || titulo.length <= 15) {
       throw new BadRequestException("No se puede crear el proyecto por su presupuesto o titulo")
     }
@@ -28,6 +31,13 @@ export class ProyectoService {
       const estudiante = await this.estudianteRepository.findOne({ where: { id: liderId } })
       if (estudiante) {
         newProyecto.lider = estudiante;
+      }
+    }
+
+    if (mentorId) {
+      const profesor = await this.profesorRepository.findOne({ where: { id: mentorId } })
+      if (profesor) {
+        newProyecto.mentor = profesor;
       }
     }
 

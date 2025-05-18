@@ -1,0 +1,277 @@
+{
+	"info": {
+		"_postman_id": "bcd0b999-88fd-4ea2-8fab-2d7400f1fdd8",
+		"name": "Evaluaciones",
+		"description": "Estas pruebas fueron diseñadas para validar el correcto funcionamiento del servicio encargado de la creación de evaluaciones, considerando tanto los escenarios válidos como los casos que deben ser restringidos por lógica de negocio:\n\n1. **Crear Evaluación válida**  \n    Verifica que el sistema permita crear correctamente una evaluación cuando todos los datos son válidos, incluyendo un evaluador asignado. Para verificar el funcionamiento de esta función básica\n    \n2. **Crear Evaluación válida sin evaluador**  \n    Evalúa que el sistema pueda aceptar una evaluación aún sin tener un evaluador definido al momento de la creación, para luego realizar la dición de este con otro método.\n    \n3. **Crear Evaluación donde evaluador es mentor**  \n    Esta prueba valida que el sistema rechace la creación de una evaluación cuando el evaluador asignado también es mentor del proyecto, lo cual no está permitido dentro de las reglas del negocio.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45054441"
+	},
+	"item": [
+		{
+			"name": "Crear Evaluacion válida",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()\r",
+							"pm.globals.set(\"evaluacion_id\",data.id)\r",
+							"pm.test(\"Status code is 201\",function (){\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"evaluadorId\": 2,\n  \"proyectId\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/evaluacion",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"evaluacion"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Crear Evaluación válida",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"evaluadorId\": 2,\r\n  \"proyectId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/evaluacion",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"evaluacion"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 1,\n    \"evaluador\": {\n        \"id\": 2,\n        \"nombre\": \"Laura Díaz\"\n    },\n    \"proyecto\": {\n        \"id\": 1,\n        \"titulo\": \"Sistema de Riego Automatizado\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear Evaluacion válida sin evaluador",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()\r",
+							"pm.globals.set(\"evaluacion_id\",data.id)\r",
+							"pm.test(\"Status code is 201\",function (){\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"proyectId\": 1\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/evaluacion",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"evaluacion"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Crear Evaluacion válida sin evaluador",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"proyectId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/evaluacion",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"evaluacion"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 2,\n    \"proyecto\": {\n        \"id\": 1,\n        \"presupuesto\": 25000,\n        \"titulo\": \"Sistema inteligente para monitoreo solar\",\n        \"area\": \"Energías Renovables y Automatización\",\n        \"notafinal\": 4.75,\n        \"estado\": 2,\n        \"fechaini\": \"2025-05-01\",\n        \"fechafin\": \"2025-08-01\"\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Ejemplo - Crear Evaluación donde evaluador es mentor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\",function(){\r",
+							"    pm.response.to.have.status(400)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Get expected error message\",function(){\r",
+							"    var data= pm.response.json();\r",
+							"    pm.expect(data.message).to.eql(\"El profesor no puede evaluar un proyecto del que ya es mentor\")\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"evaluadorId\": {{profesor_id}},\n  \"proyectId\": {{proyecto_id}}\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/evaluacion",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"evaluacion"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Crear Evaluación donde evaluador es mentor",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"evaluadorId\": {{profesor_id}},\r\n  \"proyectId\": {{proyecto_id}}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/evaluacion",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"evaluacion"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"statusCode\": 400,\n    \"message\": \"El profesor no puede evaluar un proyecto del que ya es mentor\",\n    \"error\": \"Bad Request\"\n}"
+				}
+			]
+		}
+	]
+}

@@ -24,14 +24,13 @@ export class EvaluacionService {
     const proyect = await this.proyectoRepository.findOne(
       {
         where: { id: proyectId },
-        relations: ['proyectos'],
       });
     if (!proyect) throw new NotFoundException("Proyect not found");
     if (evaluadorId) {
       const profesor = await this.profesorRepository.findOne(
         {
           where: { id: evaluadorId },
-          relations: ['proyectos'],
+          relations: ['mentorias'],
         });
       if (!profesor) throw new NotFoundException("Profesor not found");
       const yaEsMentor = profesor.mentorias.some(

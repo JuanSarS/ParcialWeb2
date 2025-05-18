@@ -1,0 +1,627 @@
+{
+	"info": {
+		"_postman_id": "21775495-0b01-42e2-a37a-ac7efb802563",
+		"name": "Proyectos",
+		"description": "Las siguientes pruebas se diseñaron para verificar el correcto funcionamiento de la creación, avance y consulta de proyectos, así como para validar restricciones de negocio definidas por el sistema:\n\n1. **Crear Proyecto**  \n    Confirma que el sistema permita crear proyectos correctamente cuando todos los datos ingresados son válidos.\n    \n2. **Crear Proyecto con mentor**  \n    Evalúa que el sistema acepte la creación de un proyecto con un mentor asignado desde el inicio. Para realizar las preubas de las diferentes asociaciones\n    \n3. **Crear Proyecto con presupuesto menor a 0**  \n    Valida que el sistema rechace la creación de proyectos cuyo presupuesto sea negativo, asegurando la coherencia financiera.\n    \n4. **Crear Proyecto con título <= 15**  \n    Verifica que el sistema detecte y rechace títulos de proyecto con 15 caracteres o menos, cumpliendo la validación de longitud mínima.\n    \n5. **Avanzar Proyecto**  \n    Confirma que un proyecto puede ser avanzado correctamente de estado, según lo permitido por su flujo de trabajo.\n    \n6. **Avanzar Proyecto completado**  \n    Valida que un proyecto no pueda ser avanzado si ya se encuentra en estado completo (estado mayor o igual a 4).\n    \n7. **Conseguir todos los estudiantes por proyecto**  \n    Verifica que el sistema pueda devolver correctamente la lista de estudiantes asociados a un proyecto válido.En este caso especificamente el lider del proyecto.\n    \n8. **Conseguir todos los estudiantes por proyecto inexistente**  \n    Asegura que el sistema responda adecuadamente cuando se consulta un proyecto que no existe, probando su manejo de errores.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "45054441"
+	},
+	"item": [
+		{
+			"name": "Crear Proyecto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"proyecto_id\",data.id)",
+							"pm.test(\"Status code is 201\",function (){",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"presupuesto\": 25000,\n  \"titulo\": \"Sistema inteligente para monitoreo solar\",\n  \"area\": \"Energías Renovables y Automatización\",\n  \"notafinal\": 4.75,\n  \"estado\": 4,\n  \"fechaini\": \"2025-05-01\",\n  \"fechafin\": \"2025-08-01\",\n  \"liderId\":{{estudiante_id}}\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/proyecto",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"proyecto"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Proyecto creado exitosamente",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"presupuesto\": 25000,\r\n  \"titulo\": \"Sistema inteligente para monitoreo solar\",\r\n  \"area\": \"Energías Renovables y Automatización\",\r\n  \"notafinal\": 4.75,\r\n  \"estado\": 4,\r\n  \"fechaini\": \"2025-05-01\",\r\n  \"fechafin\": \"2025-08-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyecto",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyecto"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": "{\n  \"id\": 1,\n  \"presupuesto\": 25000,\n  \"titulo\": \"Sistema inteligente para monitoreo solar\",\n  \"area\": \"Energías Renovables y Automatización\",\n  \"notafinal\": 4.75,\n  \"estado\": 2,\n  \"fechaini\": \"2025-05-01T00:00:00.000Z\",\n  \"fechafin\": \"2025-08-01T00:00:00.000Z\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear Proyecto con mentor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var data = pm.response.json()",
+							"pm.globals.set(\"proyecto_id\",data.id)",
+							"pm.test(\"Status code is 201\",function (){",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"presupuesto\": 25000,\n  \"titulo\": \"Sistema inteligente para monitoreo solar\",\n  \"area\": \"Energías Renovables y Automatización\",\n  \"notafinal\": 4.75,\n  \"estado\": 4,\n  \"fechaini\": \"2025-05-01\",\n  \"fechafin\": \"2025-08-01\",\n  \"liderId\":{{estudiante_id}},\n  \"mentorId\": {{profesor_id}}\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/proyecto",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"proyecto"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Proyecto creado exitosamente",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"presupuesto\": 25000,\r\n  \"titulo\": \"Sistema inteligente para monitoreo solar\",\r\n  \"area\": \"Energías Renovables y Automatización\",\r\n  \"notafinal\": 4.75,\r\n  \"estado\": 4,\r\n  \"fechaini\": \"2025-05-01\",\r\n  \"fechafin\": \"2025-08-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyecto",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyecto"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": 9,\n    \"presupuesto\": 25000,\n    \"titulo\": \"Sistema inteligente para monitoreo solar\",\n    \"area\": \"Energías Renovables y Automatización\",\n    \"notafinal\": 4.75,\n    \"estado\": 4,\n    \"fechaini\": \"2025-05-01\",\n    \"fechafin\": \"2025-08-01\",\n    \"lider\": {\n        \"id\": 2,\n        \"cedula\": 79455405,\n        \"nombre\": \"Armando Casas\",\n        \"semestre\": 5,\n        \"programa\": \"ISIS\",\n        \"promedio\": 3.6\n    },\n    \"mentor\": {\n        \"id\": 2,\n        \"cedula\": 12345678,\n        \"nombre\": \"Carlos Pérez\",\n        \"departamento\": \"Ingeniería\",\n        \"extencion\": 12345,\n        \"esParEvaluado\": false\n    }\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear Proyecto con presupuesto menor a 0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\",function(){\r",
+							"    pm.response.to.have.status(400)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Get expected error message\",function(){\r",
+							"    var data= pm.response.json();\r",
+							"    pm.expect(data.message).to.eql(\"No se puede crear el proyecto por su presupuesto o titulo\")\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"presupuesto\":0,\n  \"titulo\": \"Sistema inteligente para monitoreo solar\",\n  \"area\": \"Energías Renovables y Automatización\",\n  \"notafinal\": 4.75,\n  \"estado\": 2,\n  \"fechaini\": \"2025-05-01\",\n  \"fechafin\": \"2025-08-01\"\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/proyecto",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"proyecto"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Crear Proyecto con presupuesto menor a 0",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"presupuesto\":0,\n  \"titulo\": \"Sistema inteligente para monitoreo solar\",\n  \"area\": \"Energías Renovables y Automatización\",\n  \"notafinal\": 4.75,\n  \"estado\": 2,\n  \"fechaini\": \"2025-05-01\",\n  \"fechafin\": \"2025-08-01\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyecto",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyecto"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\r\n    \"message\": \"No se puede crear el proyecto por su presupuesto o titulo\",\r\n    \"error\": \"Bad Request\",\r\n    \"statusCode\": 400\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Crear Proyecto con titulo <= 15",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\",function(){\r",
+							"    pm.response.to.have.status(400)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Get expected error message\",function(){\r",
+							"    var data= pm.response.json();\r",
+							"    pm.expect(data.message).to.eql(\"No se puede crear el proyecto por su presupuesto o titulo\")\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"presupuesto\":1,\n  \"titulo\": \"123456789123456\",\n  \"area\": \"Energías Renovables y Automatización\",\n  \"notafinal\": 4.75,\n  \"estado\": 2,\n  \"fechaini\": \"2025-05-01\",\n  \"fechafin\": \"2025-08-01\"\n}"
+				},
+				"url": {
+					"raw": "{{baseURL}}/proyecto",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"proyecto"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Crear Proyecto con titulo <= 15",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"presupuesto\":0,\n  \"titulo\": \"Sistema inteligente para monitoreo solar\",\n  \"area\": \"Energías Renovables y Automatización\",\n  \"notafinal\": 4.75,\n  \"estado\": 2,\n  \"fechaini\": \"2025-05-01\",\n  \"fechafin\": \"2025-08-01\"\n}"
+						},
+						"url": {
+							"raw": "{{baseURL}}/proyecto",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyecto"
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\r\n    \"message\": \"No se puede crear el proyecto por su presupuesto o titulo\",\r\n    \"error\": \"Bad Request\",\r\n    \"statusCode\": 400\r\n}"
+				}
+			]
+		},
+		{
+			"name": "Avanzar Proyecto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Estado aumentado correctamente\", function () {",
+							"    const jsonData = pm.response.json();",
+							"    pm.expect(jsonData.estado).to.be.above(2);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/proyecto/{{proyecto_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"proyecto",
+						"{{proyecto_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Proyecto avanzado correctamente",
+					"originalRequest": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseURL}}/proyecto/{{proyecto_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyecto",
+								"{{proyecto_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": "{\n    \"id\": 3,\n    \"presupuesto\": 25000,\n    \"titulo\": \"Sistema inteligente para monitoreo solar\",\n    \"area\": \"Energías Renovables y Automatización\",\n    \"notafinal\": 4.75,\n    \"estado\": 3,\n    \"fechaini\": \"2025-05-01\",\n    \"fechafin\": \"2025-08-01\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Avanzar Proyecto completado",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\",function(){\r",
+							"    pm.response.to.have.status(400)\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Get expected error message\",function(){\r",
+							"    var data= pm.response.json();\r",
+							"    pm.expect(data.message).to.eql(\"Ya está completo el proyecto\")\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/proyecto/{{proyecto_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"proyecto",
+						"{{proyecto_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo - Proyecto completo (estado >= 4)",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": "{\n  \"statusCode\": 400,\n  \"message\": \"Ya está completo el proyecto\",\n  \"error\": \"Bad Request\"\n}"
+				}
+			]
+		},
+		{
+			"name": "Conseguir todos los estudiantes por proyecto",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"La respuesta debe ser un array\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(Array.isArray(jsonData)).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/proyecto/{{proyecto_id}}",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"proyecto",
+						"{{proyecto_id}}"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo-Conseguir todos los estudiantes por proyecto",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/proyecto/{{proyecto_id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyecto",
+								"{{proyecto_id}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "[\r\n    {\r\n        \"id\": 2,\r\n        \"cedula\": 79455405,\r\n        \"nombre\": \"Armando Casas\",\r\n        \"semestre\": 5,\r\n        \"programa\": \"ISIS\",\r\n        \"promedio\": 3.6\r\n    }\r\n]"
+				}
+			]
+		},
+		{
+			"name": "Conseguir todos los estudiantes por proyecto inexistente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Get expected error message\",function(){\r",
+							"    var data= pm.response.json();\r",
+							"    pm.expect(data.message).to.eql(\"Proyect not found\")\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseURL}}/proyecto/0",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"proyecto",
+						"0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Ejemplo-Conseguir todos los estudiantes por proyecto inexistente",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/proyecto/0",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"proyecto",
+								"0"
+							]
+						}
+					},
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [],
+					"body": "{\r\n    \"message\": \"Proyect not found\",\r\n    \"error\": \"Not Found\",\r\n    \"statusCode\": 404\r\n}"
+				}
+			]
+		}
+	]
+}

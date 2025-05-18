@@ -8,4 +8,5 @@ export class CreateProyectoDto {
     fechaini: string;
     fechafin: string;
     liderId?: number;
+    mentorId?: number;
 }
