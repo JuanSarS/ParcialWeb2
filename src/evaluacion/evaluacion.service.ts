@@ -20,30 +20,35 @@ export class EvaluacionService {
 
   async crearEvaluacion(createEvaluacionDto: CreateEvaluacionDto) {
     const { proyectId, evaluadorId } = createEvaluacionDto;
-    const profesor = await this.profesorRepository.findOne(
-      {
-        where: { id: evaluadorId },
-        relations: ['proyectos'],
-      });
-    if (!profesor) throw new NotFoundException("Profesor not found");
-
+    let evaluationData: { evaluador?: Profesor, proyecto?: Proyecto };
     const proyect = await this.proyectoRepository.findOne(
       {
         where: { id: proyectId },
         relations: ['proyectos'],
       });
     if (!proyect) throw new NotFoundException("Proyect not found");
-    const yaEsMentor = profesor.mentorias.some(
-      (proy: Proyecto) => proy.id === proyectId
-    );
+    if (evaluadorId) {
+      const profesor = await this.profesorRepository.findOne(
+        {
+          where: { id: evaluadorId },
+          relations: ['proyectos'],
+        });
+      if (!profesor) throw new NotFoundException("Profesor not found");
+      const yaEsMentor = profesor.mentorias.some(
+        (proy: Proyecto) => proy.id === proyectId
+      );
+      if (yaEsMentor) {
+        throw new BadRequestException("El profesor no puede evaluar un proyecto del que ya es mentor");
+      };
+      evaluationData = { evaluador: profesor };
+    }
+    else {
+      evaluationData = {}
+    }
 
-    if (yaEsMentor) {
-      throw new BadRequestException("El profesor no puede evaluar un proyecto del que ya es mentor");
-    };
-    const evaluationData = { evaluador: profesor, proyecto: proyect };
+    evaluationData = { ...evaluationData, proyecto: proyect };
     const newEvaluaccion = this.evaluacionRepository.create(evaluationData);
     return await this.evaluacionRepository.save(newEvaluaccion);
-
   }
   /*
   findAll() {

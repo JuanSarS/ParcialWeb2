@@ -17,7 +17,7 @@ export class Proyecto {
         @Column()
         area: string;
 
-        @Column()
+        @Column('float')
         notafinal: number;
 
         @Column()
